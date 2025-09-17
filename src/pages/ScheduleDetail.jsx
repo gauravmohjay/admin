@@ -18,7 +18,7 @@ import StatusBadge from '../components/UI/StatusBadge';
 import EmptyState from '../components/UI/EmptyState';
 
 const ScheduleDetail = () => {
-  const { scheduleId } = useParams();
+  const {platformId, scheduleId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   
@@ -54,8 +54,8 @@ const ScheduleDetail = () => {
         pageSize: response.pagination.pageSize,
       });
     } catch (err) {
-      setError('Failed to fetch occurrences. Please try again.');
-      console.error('Error fetching occurrences:', err);
+      setError('Failed to fetch Meetings. Please try again.');
+      console.error('Error fetching Meetings:', err);
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ const ScheduleDetail = () => {
       fetchOccurrences();
     } else {
       // If no schedule in state, redirect back to schedules list
-      navigate('/schedules');
+      navigate(`/schedules/${platformId}`);
     }
   }, [schedule, navigate]);
 
@@ -75,7 +75,7 @@ const ScheduleDetail = () => {
   };
 
   const handleOccurrenceClick = (occurrence) => {
-    navigate(`/schedules/${scheduleId}/occurrences/${occurrence._id}`, {
+    navigate(`/schedules/${platformId}/${scheduleId}/occurrences/${occurrence._id}`, {
       state: { schedule, occurrence }
     });
   };
@@ -102,7 +102,7 @@ const ScheduleDetail = () => {
       {/* Header */}
       <div className="flex items-center space-x-4">
         <button
-          onClick={() => navigate('/schedules')}
+          onClick={() => navigate(`/schedules/${platformId}`)}
           className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
@@ -209,7 +209,7 @@ const ScheduleDetail = () => {
       {/* Occurrences */}
       <div className="bg-white rounded-lg shadow border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Occurrences</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Meetings</h2>
         </div>
 
         {loading ? (
@@ -235,7 +235,7 @@ const ScheduleDetail = () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Occurrence
+                      Meetings
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Date & Time

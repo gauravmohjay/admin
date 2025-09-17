@@ -11,15 +11,15 @@ function App() {
   return (
     <Router>
       <div className="flex min-h-screen bg-gray-50">
-        <Sidebar />
+        {/* <Sidebar /> */}
         <div className="flex-1 ">
           <Topbar />
           <main className="flex-1">
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/schedules" element={<Schedules />} />
-              <Route path="/schedules/:scheduleId" element={<ScheduleDetail />} />
-              <Route path="/schedules/:scheduleId/occurrences/:occurrenceId" element={<OccurrenceDetail />} />
+              <Route path="/schedules/:platformId" element={<Schedules />} />
+              <Route path="/schedules/:platformId/:scheduleId" element={<ScheduleDetail />} />
+              <Route path="/schedules/:platformId/:scheduleId/occurrences/:occurrenceId" element={<OccurrenceDetail />} />
               <Route path="/recordings" element={<Recordings />} />
             </Routes>
           </main>

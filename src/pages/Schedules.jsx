@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Eye, Calendar, Clock, Users } from 'lucide-react';
-import { scheduleAPI } from '../services/api';
-import { formatDateTime, formatRecurrence } from '../utils/formatters';
-import LoadingSpinner from '../components/UI/LoadingSpinner';
-import Pagination from '../components/UI/Pagination';
-import StatusBadge from '../components/UI/StatusBadge';
-import EmptyState from '../components/UI/EmptyState';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Eye, Calendar, Clock, Users } from "lucide-react";
+import { scheduleAPI } from "../services/api";
+import { formatDateTime, formatRecurrence } from "../utils/formatters";
+import LoadingSpinner from "../components/UI/LoadingSpinner";
+import Pagination from "../components/UI/Pagination";
+import StatusBadge from "../components/UI/StatusBadge";
+import EmptyState from "../components/UI/EmptyState";
+import { useParams } from "react-router-dom";
 
 const Schedules = () => {
   const [schedules, setSchedules] = useState([]);
@@ -18,6 +19,7 @@ const Schedules = () => {
     totalCount: 0,
     pageSize: 10,
   });
+  const { platformId } = useParams();
 
   const navigate = useNavigate();
 
@@ -25,7 +27,7 @@ const Schedules = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await scheduleAPI.getSchedules(limit, page);
+      const response = await scheduleAPI.getSchedules(limit, page, platformId);
       setSchedules(response.data || []);
       setPagination({
         currentPage: response.pagination.currentPage,
@@ -34,8 +36,8 @@ const Schedules = () => {
         pageSize: response.pagination.pageSize,
       });
     } catch (err) {
-      setError('Failed to fetch schedules. Please try again.');
-      console.error('Error fetching schedules:', err);
+      setError("Failed to fetch schedules. Please try again.");
+      console.error("Error fetching schedules:", err);
     } finally {
       setLoading(false);
     }
@@ -50,18 +52,18 @@ const Schedules = () => {
   };
 
   const handleScheduleClick = (schedule) => {
-    navigate(`/schedules/${schedule.scheduleId}`, { state: { schedule } });
+    navigate(`/schedules/${schedule.platformId}/${schedule.scheduleId}`, { state: { schedule } });
   };
 
   const formatHosts = (schedule) => {
     if (!schedule.hosts || schedule.hosts.length === 0) {
-      return schedule.hostName || 'N/A';
+      return schedule.hostName || "N/A";
     }
-    
+
     if (schedule.hosts.length === 1) {
       return schedule.hosts[0].hostName;
     }
-    
+
     const primary = schedule.hosts[0].hostName;
     const additional = schedule.hosts.length - 1;
     return `${primary} +${additional}`;
@@ -99,7 +101,9 @@ const Schedules = () => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Schedules</h1>
-          <p className="text-gray-600">Manage and view all schedule configurations</p>
+          <p className="text-gray-600">
+            Manage and view all schedule configurations
+          </p>
         </div>
       </div>
 
@@ -132,23 +136,39 @@ const Schedules = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {schedules.map((schedule) => (
-                  <tr key={schedule._id} className="hover:bg-gray-50 cursor-pointer">
-                    <td className="px-6 py-4" onClick={() => handleScheduleClick(schedule)}>
+                  <tr
+                    key={schedule._id}
+                    className="hover:bg-gray-50 cursor-pointer"
+                  >
+                    <td
+                      className="px-6 py-4"
+                      onClick={() => handleScheduleClick(schedule)}
+                    >
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{schedule.title}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {schedule.title}
+                        </div>
                         <div className="text-sm text-gray-500 flex items-center space-x-4">
                           <span className="flex items-center">
                             <Users className="w-3 h-3 mr-1" />
                             {schedule.group}
                           </span>
-                          <span className="text-xs text-gray-400">ID: {schedule.scheduleId}</span>
+                          <span className="text-xs text-gray-400">
+                            ID: {schedule.scheduleId}
+                          </span>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900" onClick={() => handleScheduleClick(schedule)}>
+                    <td
+                      className="px-6 py-4 text-sm text-gray-900"
+                      onClick={() => handleScheduleClick(schedule)}
+                    >
                       {formatHosts(schedule)}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900" onClick={() => handleScheduleClick(schedule)}>
+                    <td
+                      className="px-6 py-4 text-sm text-gray-900"
+                      onClick={() => handleScheduleClick(schedule)}
+                    >
                       <div>
                         <div className="flex items-center">
                           <Calendar className="w-3 h-3 mr-1 text-gray-400" />
@@ -160,10 +180,19 @@ const Schedules = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900" onClick={() => handleScheduleClick(schedule)}>
-                      {formatRecurrence(schedule.recurrence, schedule.daysOfWeek)}
+                    <td
+                      className="px-6 py-4 text-sm text-gray-900"
+                      onClick={() => handleScheduleClick(schedule)}
+                    >
+                      {formatRecurrence(
+                        schedule.recurrence,
+                        schedule.daysOfWeek
+                      )}
                     </td>
-                    <td className="px-6 py-4" onClick={() => handleScheduleClick(schedule)}>
+                    <td
+                      className="px-6 py-4"
+                      onClick={() => handleScheduleClick(schedule)}
+                    >
                       <StatusBadge status={schedule.status} />
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">

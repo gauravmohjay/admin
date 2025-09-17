@@ -17,7 +17,9 @@ import StatusBadge from '../components/UI/StatusBadge';
 import EmptyState from '../components/UI/EmptyState';
 
 const OccurrenceDetail = () => {
-  const { scheduleId, occurrenceId } = useParams();
+  const { platformId,scheduleId, occurrenceId } = useParams();
+
+  console.log("params",platformId,scheduleId)
   const location = useLocation();
   const navigate = useNavigate();
   
@@ -67,7 +69,7 @@ const OccurrenceDetail = () => {
       fetchParticipants();
     } else {
       // If no schedule or occurrence in state, redirect back
-      navigate(`/schedules/${scheduleId}`);
+      navigate(`/schedules/${platformId}/${scheduleId}`);
     }
   }, [schedule, occurrence, scheduleId, navigate]);
 
@@ -158,7 +160,7 @@ const OccurrenceDetail = () => {
       {/* Header */}
       <div className="flex items-center space-x-4">
         <button
-          onClick={() => navigate(`/schedules/${scheduleId}`)}
+          onClick={() => navigate(`/schedules/${platformId}/${scheduleId}`)}
           className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
@@ -166,7 +168,7 @@ const OccurrenceDetail = () => {
         </button>
         <div className="h-6 w-px bg-gray-300" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Occurrence Participants</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Meeting Participants</h1>
           <p className="text-gray-600">{occurrence.title}</p>
         </div>
       </div>
@@ -175,7 +177,7 @@ const OccurrenceDetail = () => {
       <div className="bg-white rounded-lg shadow border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">Occurrence Information</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Meeting Information</h2>
             <StatusBadge status={occurrence.status} />
           </div>
         </div>
@@ -292,7 +294,7 @@ const OccurrenceDetail = () => {
         ) : (
           <EmptyState
             title="No participants found"
-            description="This occurrence has no recorded participants yet."
+            description="This Meeting has no recorded participants yet."
             icon={Users}
           />
         )}

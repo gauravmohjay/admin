@@ -50,7 +50,7 @@ const Topbar = () => {
   const handleResultClick = (schedule) => {
     setShowResults(false);
     setSearchQuery('');
-    navigate(`/schedules/${schedule.scheduleId}`, { state: { schedule } });
+    navigate(`/schedules/${schedule.platformId}/${schedule.scheduleId}`, { state: { schedule } });
   };
 
   const handleSearchSubmit = (e) => {
