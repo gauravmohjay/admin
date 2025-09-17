@@ -1,20 +1,32 @@
-// src/App.jsx
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import { Sidebar } from "./components/Sidebar";
-import { SchedulesPanel } from "./components/SchedulesPanel";
-import { SummaryPage } from "./components/SummaryPage";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Sidebar from './components/Layout/Sidebar';
+import Topbar from './components/Layout/Topbar';
+import Dashboard from './pages/Dashboard';
+import Schedules from './pages/Schedules';
+import ScheduleDetail from './pages/ScheduleDetail';
+import OccurrenceDetail from './pages/OccurrenceDetail';
+import Recordings from './pages/Recordings';
 
-export default function App() {
+function App() {
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 p-8 bg-gray-50 min-h-screen overflow-auto">
-        <Routes>
-          <Route path="/" element={<SchedulesPanel />} />
-          <Route path="/summary" element={<SummaryPage />} />
-        </Routes>
-      </main>
-    </div>
+    <Router>
+      <div className="flex min-h-screen bg-gray-50">
+        <Sidebar />
+        <div className="flex-1 ">
+          <Topbar />
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/schedules" element={<Schedules />} />
+              <Route path="/schedules/:scheduleId" element={<ScheduleDetail />} />
+              <Route path="/schedules/:scheduleId/occurrences/:occurrenceId" element={<OccurrenceDetail />} />
+              <Route path="/recordings" element={<Recordings />} />
+            </Routes>
+          </main>
+        </div>
+      </div>
+    </Router>
   );
 }
+
+export default App;
