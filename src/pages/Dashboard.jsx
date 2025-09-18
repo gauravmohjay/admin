@@ -160,7 +160,7 @@ const Dashboard = () => {
             <h2 className="text-xl font-semibold text-gray-900">Statistics</h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Total Schedules */}
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-4">
@@ -189,7 +189,7 @@ const Dashboard = () => {
                 <div className="p-2 bg-green-100 rounded-lg">
                   <Activity className="w-5 h-5 text-green-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900">By Platform</h3>
+                <h3 className="font-semibold text-gray-900">Platform</h3>
               </div>
               <div className="space-y-3">
                 {scheduleStat?.byPlatform?.length > 0 ? (
@@ -220,7 +220,7 @@ const Dashboard = () => {
                 <div className="p-2 bg-purple-100 rounded-lg">
                   <Clock className="w-5 h-5 text-purple-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900">By Recurrence</h3>
+                <h3 className="font-semibold text-gray-900">Recurrence</h3>
               </div>
               <div className="space-y-3">
                 {scheduleStat?.byRecurrence?.length > 0 ? (
@@ -252,18 +252,21 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="bg-white rounded-xl border border-gray-200 p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Clock className="w-5 h-5 text-purple-600" />
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-orange-100 rounded-lg">
+                    <Clock className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900">Meetings</h3>
                 </div>
-                <h3 className="font-semibold text-gray-900">occurrences</h3>
               </div>
-              <div className="space-y-3">
-                {occurrenceStats[0]?.globalStats ? (
-                  <div>{occurrenceData[0].globalStats}</div>
-                ) : (
-                  <div>nothing</div>
-                )}
+              <div className="space-y-2">
+                <p className="text-3xl font-bold text-orange-600">
+                  {occurrenceStats?.totalOccurrences || 0}
+                </p>
+                <p className="text-sm text-gray-500">
+                  Total meetings across schedules
+                </p>
               </div>
             </div>
           </div>

@@ -1,11 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './components/Layout/Sidebar';
-import Topbar from './components/Layout/Topbar';
-import Dashboard from './pages/Dashboard';
-import Schedules from './pages/Schedules';
-import ScheduleDetail from './pages/ScheduleDetail';
-import OccurrenceDetail from './pages/OccurrenceDetail';
-import Recordings from './pages/Recordings';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Sidebar from "./components/Layout/Sidebar";
+import Topbar from "./components/Layout/Topbar";
+import Dashboard from "./pages/Dashboard";
+import Schedules from "./pages/Schedules";
+import ScheduleDetail from "./pages/ScheduleDetail";
+import OccurrenceDetail from "./pages/OccurrenceDetail";
+import Recordings from "./pages/Recordings";
+import SchedulesTabs from "./components/Layout/SchedulesTabs";
 
 function App() {
   return (
@@ -17,10 +18,22 @@ function App() {
           <main className="flex-1">
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/schedules/:platformId" element={<Schedules />} />
-              <Route path="/schedules/:platformId/:scheduleId" element={<ScheduleDetail />} />
-              <Route path="/schedules/:platformId/:scheduleId/occurrences/:occurrenceId" element={<OccurrenceDetail />} />
-              <Route path="/recordings" element={<Recordings />} />
+              {/* <Route path="/schedules/:platformId" element={<Schedules />} /> */}
+              <Route path="/schedules/:platformId" element={<SchedulesTabs />}>
+                {/* Default tab: Schedules (index child) */}
+                <Route index element={<Schedules />} />
+                {/* Second tab: Recordings */}
+                <Route path="recordings" element={<Recordings />} />
+              </Route>
+              <Route
+                path="/schedules/:platformId/:scheduleId"
+                element={<ScheduleDetail />}
+              />
+              <Route
+                path="/schedules/:platformId/:scheduleId/occurrences/:occurrenceId"
+                element={<OccurrenceDetail />}
+              />
+              {/* <Route path="/recordings" element={<Recordings />} /> */}
             </Routes>
           </main>
         </div>

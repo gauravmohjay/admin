@@ -96,7 +96,7 @@ const Schedules = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -107,120 +107,202 @@ const Schedules = () => {
         </div>
       </div>
 
-      {/* Schedules Table */}
+      {/* Content */}
       {schedules.length > 0 ? (
-        <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Schedule
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Host(s)
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Time
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Recurrence
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {schedules.map((schedule) => (
-                  <tr
-                    key={schedule._id}
-                    className="hover:bg-gray-50 cursor-pointer"
-                  >
-                    <td
-                      className="px-6 py-4"
-                      onClick={() => handleScheduleClick(schedule)}
-                    >
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {schedule.title}
-                        </div>
-                        <div className="text-sm text-gray-500 flex items-center space-x-4">
-                          <span className="flex items-center">
-                            <Users className="w-3 h-3 mr-1" />
-                            {schedule.group}
-                          </span>
-                          <span className="text-xs text-gray-400">
-                            ID: {schedule.scheduleId}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td
-                      className="px-6 py-4 text-sm text-gray-900"
-                      onClick={() => handleScheduleClick(schedule)}
-                    >
-                      {formatHosts(schedule)}
-                    </td>
-                    <td
-                      className="px-6 py-4 text-sm text-gray-900"
-                      onClick={() => handleScheduleClick(schedule)}
-                    >
-                      <div>
-                        <div className="flex items-center">
-                          <Calendar className="w-3 h-3 mr-1 text-gray-400" />
-                          {formatDateTime(schedule.startDate, false)}
-                        </div>
-                        <div className="flex items-center text-gray-500">
-                          <Clock className="w-3 h-3 mr-1" />
-                          {schedule.startTime} - {schedule.endTime}
-                        </div>
-                      </div>
-                    </td>
-                    <td
-                      className="px-6 py-4 text-sm text-gray-900"
-                      onClick={() => handleScheduleClick(schedule)}
-                    >
+        <>
+          {/* Mobile list (cards) */}
+          <div className="md:hidden space-y-3">
+            {schedules.map((schedule) => (
+              <div
+                key={schedule._id}
+                onClick={() => handleScheduleClick(schedule)}
+                className="bg-white rounded-lg shadow border border-gray-200 p-4 active:scale-[0.99] transition cursor-pointer"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="min-w-0">
+                    <div className="text-base font-semibold text-gray-900 truncate">
+                      {schedule.title}
+                    </div>
+                    <div className="mt-1 text-sm text-gray-500 flex items-center flex-wrap">
+                      <span className="flex items-center mr-2">
+                        <Users className="w-3 h-3 mr-1" />
+                        <span className="truncate">{schedule.group}</span>
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        ID: {schedule.scheduleId}
+                      </span>
+                    </div>
+                  </div>
+                  <StatusBadge status={schedule.status} />
+                </div>
+
+                <div className="mt-3 space-y-1 text-sm text-gray-700">
+                  <div className="flex items-center">
+                    <Calendar className="w-3 h-3 mr-2 text-gray-400" />
+                    <span>{formatDateTime(schedule.startDate, false)}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Clock className="w-3 h-3 mr-2 text-gray-400" />
+                    <span>
+                      {schedule.startTime} - {schedule.endTime}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-2 text-gray-400">↻</span>
+                    <span>
                       {formatRecurrence(
                         schedule.recurrence,
                         schedule.daysOfWeek
                       )}
-                    </td>
-                    <td
-                      className="px-6 py-4"
-                      onClick={() => handleScheduleClick(schedule)}
-                    >
-                      <StatusBadge status={schedule.status} />
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleScheduleClick(schedule);
-                        }}
-                        className="text-primary-600 hover:text-primary-800 flex items-center space-x-1"
-                      >
-                        <Eye className="w-4 h-4" />
-                        <span>View</span>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <Users className="w-3 h-3 mr-2 text-gray-400" />
+                    <span>{formatHosts(schedule)}</span>
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleScheduleClick(schedule);
+                    }}
+                    className="inline-flex items-center text-primary-600 hover:text-primary-800"
+                  >
+                    <Eye className="w-4 h-4 mr-1" />
+                    <span>View</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            {/* Pagination for mobile */}
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              totalCount={pagination.totalCount}
+              pageSize={pagination.pageSize}
+              onPageChange={handlePageChange}
+            />
           </div>
 
-          <Pagination
-            currentPage={pagination.currentPage}
-            totalPages={pagination.totalPages}
-            totalCount={pagination.totalCount}
-            pageSize={pagination.pageSize}
-            onPageChange={handlePageChange}
-          />
-        </div>
+          {/* Desktop table (original, unchanged, just hidden on mobile) */}
+          <div className="hidden md:block">
+            <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Schedule
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Host(s)
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Time
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Recurrence
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {schedules.map((schedule) => (
+                      <tr
+                        key={schedule._id}
+                        className="hover:bg-gray-50 cursor-pointer"
+                      >
+                        <td
+                          className="px-6 py-4"
+                          onClick={() => handleScheduleClick(schedule)}
+                        >
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {schedule.title}
+                            </div>
+                            <div className="text-sm text-gray-500 flex items-center space-x-4">
+                              <span className="flex items-center">
+                                <Users className="w-3 h-3 mr-1" />
+                                {schedule.group}
+                              </span>
+                              <span className="text-xs text-gray-400">
+                                ID: {schedule.scheduleId}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td
+                          className="px-6 py-4 text-sm text-gray-900"
+                          onClick={() => handleScheduleClick(schedule)}
+                        >
+                          {formatHosts(schedule)}
+                        </td>
+                        <td
+                          className="px-6 py-4 text-sm text-gray-900"
+                          onClick={() => handleScheduleClick(schedule)}
+                        >
+                          <div>
+                            <div className="flex items-center">
+                              <Calendar className="w-3 h-3 mr-1 text-gray-400" />
+                              {formatDateTime(schedule.startDate, false)}
+                            </div>
+                            <div className="flex items-center text-gray-500">
+                              <Clock className="w-3 h-3 mr-1" />
+                              {schedule.startTime} - {schedule.endTime}
+                            </div>
+                          </div>
+                        </td>
+                        <td
+                          className="px-6 py-4 text-sm text-gray-900"
+                          onClick={() => handleScheduleClick(schedule)}
+                        >
+                          {formatRecurrence(
+                            schedule.recurrence,
+                            schedule.daysOfWeek
+                          )}
+                        </td>
+                        <td
+                          className="px-6 py-4"
+                          onClick={() => handleScheduleClick(schedule)}
+                        >
+                          <StatusBadge status={schedule.status} />
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-500">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleScheduleClick(schedule);
+                            }}
+                            className="text-primary-600 hover:text-primary-800 flex items-center space-x-1"
+                          >
+                            <Eye className="w-4 h-4" />
+                            <span>View</span>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                totalCount={pagination.totalCount}
+                pageSize={pagination.pageSize}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          </div>
+        </>
       ) : (
         <div className="bg-white rounded-lg shadow border border-gray-200">
           <EmptyState
