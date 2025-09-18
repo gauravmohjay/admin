@@ -44,7 +44,7 @@ export const scheduleAPI = {
     const response = await api.get("/schedule/stats");
     return response.data.data;
   },
-  getOccurrencesStats : async () => {
+  getOccurrencesStats: async () => {
     const response = await api.get(`/schedule/occurrence/stats`);
     return response.data.data;
   },
@@ -98,6 +98,10 @@ export const recordingAPI = {
     const response = await api.get(
       `/recording/all?limit=${limit}&page=${page}`
     );
+    return response.data;
+  },
+  getRecordingsBySchedule: async (platformId) => {
+    const response = await api.get(`/recordings?&platformId=${platformId}`);
     return response.data;
   },
 };
