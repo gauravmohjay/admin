@@ -9,8 +9,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiZGV2ZWxvcGVyIiwiZ2VuZXJhdGVkIjoiMjAyNS0wOC0yMVQxMTo0NjozMy41NDBaIiwidGltZXN0YW1wIjoxNzU1Nzc2NzkzNTQwLCJpYXQiOjE3NTU3NzY3OTMsImV4cCI6MTc4NzMxMjc5M30.ryYJdQysqHDBnDrFjBABz6vNYhHuipcD8zDkDng-U9I";
+    const token = localStorage.getItem("token");
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
@@ -36,16 +35,16 @@ export const scheduleAPI = {
   // Get all schedules with pagination
   getSchedules: async (limit = 5, page = 1, platformId) => {
     const response = await api.get(
-      `/schedule/all?limit=${limit}&page=${page}&platformId=${platformId}`
+      `schedule/all?limit=${limit}&page=${page}&platformId=${platformId}`
     );
     return response.data;
   },
   getScheduleStats: async () => {
-    const response = await api.get("/schedule/stats");
+    const response = await api.get("/admin/schedule/stats");
     return response.data.data;
   },
   getOccurrencesStats: async () => {
-    const response = await api.get(`/schedule/occurrence/stats`);
+    const response = await api.get(`/admin/occurrence/stats`);
     return response.data.data;
   },
 
@@ -53,7 +52,7 @@ export const scheduleAPI = {
   searchSchedules: async (searchParam) => {
     if (!searchParam.trim()) return { count: 0, schedules: [] };
     const response = await api.get(
-      `/schedule/search?searchParam=${encodeURIComponent(searchParam)}`
+      `/admin/search?searchParam=${encodeURIComponent(searchParam)}`
     );
     return response.data;
   },
@@ -104,6 +103,10 @@ export const recordingAPI = {
     const response = await api.get(`/recordings?&platformId=${platformId}`);
     return response.data;
   },
+};
+export const login = async ({ username, password }) => {
+  const response = await api.post("/admin/login");
+  return response.data;
 };
 
 export default api;

@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Sidebar from "./components/Layout/Sidebar";
 import Topbar from "./components/Layout/Topbar";
 import Dashboard from "./pages/Dashboard";
 import Schedules from "./pages/Schedules";
@@ -7,33 +6,76 @@ import ScheduleDetail from "./pages/ScheduleDetail";
 import OccurrenceDetail from "./pages/OccurrenceDetail";
 import Recordings from "./pages/Recordings";
 import SchedulesTabs from "./components/Layout/SchedulesTabs";
+import Login from "./pages/Login";
+import ProtectedRoute from "./components/Layout/ProtectedRoute";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsLoggedIn(!!localStorage.getItem("token"));
+    };
+
+    // listen to storage changes (like login/logout in another tab)
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
   return (
     <Router>
       <div className="flex min-h-screen bg-gray-50">
-        {/* <Sidebar /> */}
-        <div className="flex-1 ">
-          <Topbar />
+        <div className="flex-1">
+          {isLoggedIn && <Topbar />} {/* consistent Topbar */}
+
           <main className="flex-1">
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              {/* <Route path="/schedules/:platformId" element={<Schedules />} /> */}
-              <Route path="/schedules/:platformId" element={<SchedulesTabs />}>
-                {/* Default tab: Schedules (index child) */}
+              {/* Public route */}
+              <Route path="/" element={<Login />} />
+
+              {/* Protected routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/schedules/:platformId"
+                element={
+                  <ProtectedRoute>
+                    <SchedulesTabs />
+                  </ProtectedRoute>
+                }
+              >
                 <Route index element={<Schedules />} />
-                {/* Second tab: Recordings */}
                 <Route path="recordings" element={<Recordings />} />
               </Route>
+
               <Route
                 path="/schedules/:platformId/:scheduleId"
-                element={<ScheduleDetail />}
+                element={
+                  <ProtectedRoute>
+                    <ScheduleDetail />
+                  </ProtectedRoute>
+                }
               />
+
               <Route
                 path="/schedules/:platformId/:scheduleId/occurrences/:occurrenceId"
-                element={<OccurrenceDetail />}
+                element={
+                  <ProtectedRoute>
+                    <OccurrenceDetail />
+                  </ProtectedRoute>
+                }
               />
-              {/* <Route path="/recordings" element={<Recordings />} /> */}
             </Routes>
           </main>
         </div>

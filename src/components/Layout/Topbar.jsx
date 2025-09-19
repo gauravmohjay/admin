@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Search, User } from 'lucide-react';
-import { scheduleAPI } from '../../services/api';
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { Home, Search, User, User2 } from "lucide-react";
+import { scheduleAPI } from "../../services/api";
 
 const Topbar = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -21,7 +21,7 @@ const Topbar = () => {
           setSearchResults(results.schedules || []);
           setShowResults(true);
         } catch (error) {
-          console.error('Search error:', error);
+          console.error("Search error:", error);
           setSearchResults([]);
         } finally {
           setIsSearching(false);
@@ -43,14 +43,16 @@ const Topbar = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleResultClick = (schedule) => {
     setShowResults(false);
-    setSearchQuery('');
-    navigate(`/schedules/${schedule.platformId}/${schedule.scheduleId}`, { state: { schedule } });
+    setSearchQuery("");
+    navigate(`/schedules/${schedule.platformId}/${schedule.scheduleId}`, {
+      state: { schedule },
+    });
   };
 
   const handleSearchSubmit = (e) => {
@@ -63,6 +65,19 @@ const Topbar = () => {
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
+        <div>
+          <button
+            onClick={() => {
+              navigate("/dashboard");
+            }}
+            className="flex items-center cursor-pointer space-x-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
+              <Home className="w-6 h-6 text-black" />
+            </div>
+            <span className="text-sm font-medium text-gray-700">dashboard</span>
+          </button>
+        </div>
         {/* Search */}
         <div className="relative mx-auto flex-1 max-w-2xl" ref={searchRef}>
           <form onSubmit={handleSearchSubmit}>
@@ -89,7 +104,8 @@ const Topbar = () => {
               {searchResults.length > 0 ? (
                 <>
                   <div className="px-3 py-2 text-xs text-gray-500 border-b border-gray-100">
-                    {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} found
+                    {searchResults.length} result
+                    {searchResults.length !== 1 ? "s" : ""} found
                   </div>
                   {searchResults.map((schedule, index) => (
                     <button
@@ -97,9 +113,12 @@ const Topbar = () => {
                       className="w-full px-3 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
                       onClick={() => handleResultClick(schedule)}
                     >
-                      <div className="font-medium text-gray-900">{schedule.title}</div>
+                      <div className="font-medium text-gray-900">
+                        {schedule.title}
+                      </div>
                       <div className="text-sm text-gray-500">
-                        {schedule.hostName} — {schedule.group} — {schedule.scheduleId}
+                        {schedule.hostName} — {schedule.group} —{" "}
+                        {schedule.scheduleId}
                       </div>
                     </button>
                   ))}
@@ -115,11 +134,18 @@ const Topbar = () => {
 
         {/* User Menu */}
         <div className="flex items-center space-x-4">
-          <button className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              window.dispatchEvent(new Event("storage"));
+              navigate("/");
+            }}
+            className="flex items-center cursor-pointer space-x-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
-              <User className="w-4 h-4 text-white" />
+              <User2 className="w-6 h-6 text-black" />
             </div>
-            <span className="text-sm font-medium text-gray-700">Admin</span>
+            <span className="text-sm font-medium text-gray-700">Log out</span>
           </button>
         </div>
       </div>
