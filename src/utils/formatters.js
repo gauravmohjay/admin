@@ -21,13 +21,12 @@ export const formatDateTime = (isoString, showTime = true, timezone = 'Asia/Kolk
     year: 'numeric',
     month: 'short',
     day: '2-digit',
-    timeZone: timezone,
   };
   
   if (showTime) {
     options.hour = '2-digit';
     options.minute = '2-digit';
-    options.timeZoneName = 'short';
+    // options.timeZoneName = 'short';
   }
   
   return new Intl.DateTimeFormat('en-US', options).format(date);

@@ -101,9 +101,9 @@ const Schedules = () => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Schedules</h1>
-          <p className="text-gray-600">
+          {/* <p className="text-gray-600">
             Manage and view all schedule configurations
-          </p>
+          </p> */}
         </div>
       </div>
 

@@ -29,6 +29,7 @@ import { getPlatforms } from "../services/api";
 import { scheduleAPI } from "../services/api";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import mohjayLogo from "/mohjay.png"
 
 // Demo data for charts
 const occurrenceData = [
@@ -107,9 +108,9 @@ const Dashboard = () => {
         <div className="px-6 py-8">
           <div className="max-w-7xl mx-auto">
             <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600 mt-2">
+            {/* <p className="text-gray-600 mt-2">
               overview of your platform schedules and analytics
-            </p>
+            </p> */}
           </div>
         </div>
       </div>
@@ -140,8 +141,12 @@ const Dashboard = () => {
               platforms?.map((platform) => (
                 <Link key={platform.name} to={"/schedules/" + platform.name}>
                   <div className="group bg-white rounded-xl border border-gray-200 p-6 hover:border-indigo-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
-                    <div className="flex items-center justify-center w-12 h-12 bg-indigo-100 rounded-lg mb-4 group-hover:bg-indigo-200 transition-colors">
-                      <Activity className="w-6 h-6 text-indigo-600" />
+                    <div className="flex items-center justify-center w-16 h-16 bg-black/90 rounded-lg mb-4 group-hover:bg-black/80 transition-colors">
+                      {platform.name == "mohjay" ? (
+                        <img src={mohjayLogo}></img>
+                      ) : (
+                        <Activity className="w-6 h-6 text-indigo-600" />
+                      )}
                     </div>
                     <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
                       {platform.name}
@@ -364,7 +369,7 @@ const Dashboard = () => {
         </div> */}
 
         {/* Recent Activity */}
-        <div>
+        {/* <div>
           <div className="flex items-center gap-2 mb-6">
             <Users className="w-5 h-5 text-indigo-600" />
             <h2 className="text-xl font-semibold text-gray-900">
@@ -430,7 +435,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

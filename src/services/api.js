@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+console.log(API_BASE_URL)
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -99,14 +100,20 @@ export const recordingAPI = {
     );
     return response.data;
   },
-  getRecordingsBySchedule: async (platformId) => {
-    const response = await api.get(`/recordings?&platformId=${platformId}`);
+  getRecordingsBySchedule: async (scheduleId, platformId, occurrenceId) => {
+    const response = await api.get(
+      `/recordings?scheduleId=${scheduleId}&platformId=${platformId}&occurrenceId=${occurrenceId}`
+    );
     return response.data;
   },
 };
-export const login = async ({ username, password }) => {
-  const response = await api.post("/admin/login");
-  return response.data;
+export const login = async (username, password) => {
+  const response = await api.post("/admin/login", {
+    username,
+    password,
+  });
+  return response.data; // axios auto-parses JSON
 };
+
 
 export default api;

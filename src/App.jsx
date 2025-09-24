@@ -28,11 +28,11 @@ function App() {
 
   return (
     <Router>
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="flex  min-h-screen bg-gray-50">
         <div className="flex-1">
           {isLoggedIn && <Topbar />} {/* consistent Topbar */}
 
-          <main className="flex-1">
+          <main className="flex-1  w-11/12 mx-auto">
             <Routes>
               {/* Public route */}
               <Route path="/" element={<Login />} />
@@ -51,12 +51,12 @@ function App() {
                 path="/schedules/:platformId"
                 element={
                   <ProtectedRoute>
-                    <SchedulesTabs />
+                   <Schedules />
                   </ProtectedRoute>
                 }
               >
-                <Route index element={<Schedules />} />
-                <Route path="recordings" element={<Recordings />} />
+                {/* <Route index element={<Schedules />} />
+                <Route path="recordings" element={<Recordings />} /> */}
               </Route>
 
               <Route

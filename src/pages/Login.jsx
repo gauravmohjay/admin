@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../services/api";
+import {jwtDecode} from "jwt-decode"; // <-- install this: npm i jwt-decode
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -8,21 +10,36 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // ✅ Check if token already exists & is valid
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        console.log("decoded",decoded)
+        if (decoded.exp * 1000 > Date.now()) {
+ 
+          navigate("/dashboard", { replace: true });
+        } else {
+          // expired token → remove it
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        }
+      } catch {
+        // invalid token → clear it
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
+    }
+  }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:3000/admin/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
+      const data = await login(username, password);
 
       if (data.success) {
         localStorage.setItem("token", data.token);

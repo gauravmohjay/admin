@@ -75,7 +75,7 @@ const Topbar = () => {
             <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
               <Home className="w-6 h-6 text-black" />
             </div>
-            <span className="text-sm font-medium text-gray-700">dashboard</span>
+            <span className="text-sm font-medium text-gray-700">home</span>
           </button>
         </div>
         {/* Search */}
@@ -85,7 +85,7 @@ const Topbar = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search schedules, hosts, groups..."
+                placeholder="Search schedules, hosts & groups"
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}

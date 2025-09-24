@@ -1,29 +1,32 @@
-import { useState, useEffect } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Clock, 
-  Users, 
-  ChevronDown, 
+import { useState, useEffect } from "react";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  Users,
+  ChevronDown,
   ChevronRight,
-  User
-} from 'lucide-react';
-import { scheduleAPI } from '../services/api';
-import { formatDateTime, formatDuration } from '../utils/formatters';
-import LoadingSpinner from '../components/UI/LoadingSpinner';
-import Pagination from '../components/UI/Pagination';
-import StatusBadge from '../components/UI/StatusBadge';
-import EmptyState from '../components/UI/EmptyState';
+  User,
+  ReceiptEuro,
+  Camera,
+} from "lucide-react";
+import { recordingAPI, scheduleAPI } from "../services/api";
+import { formatDateTime, formatDuration } from "../utils/formatters";
+import LoadingSpinner from "../components/UI/LoadingSpinner";
+import Pagination from "../components/UI/Pagination";
+import StatusBadge from "../components/UI/StatusBadge";
+import EmptyState from "../components/UI/EmptyState";
 
 const OccurrenceDetail = () => {
-  const { platformId,scheduleId, occurrenceId } = useParams();
+  const { platformId, scheduleId, occurrenceId } = useParams();
 
-  console.log("params",platformId,scheduleId)
+  console.log("params", platformId, scheduleId);
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const [schedule] = useState(location.state?.schedule);
+  const [recordings, setRecordings] = useState([]);
   const [occurrence] = useState(location.state?.occurrence);
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +41,7 @@ const OccurrenceDetail = () => {
 
   const fetchParticipants = async (page = 1, limit = 10) => {
     if (!schedule || !occurrence) return;
-    
+
     try {
       setLoading(true);
       setError(null);
@@ -57,8 +60,29 @@ const OccurrenceDetail = () => {
         pageSize: response.pagination.limit,
       });
     } catch (err) {
-      setError('Failed to fetch participant logs. Please try again.');
-      console.error('Error fetching participant logs:', err);
+      setError("Failed to fetch participant logs. Please try again.");
+      console.error("Error fetching participant logs:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchRecordings = async () => {
+    if (!schedule || !occurrence) return;
+    try {
+      setLoading(true);
+      setError(null);
+
+      const data = await recordingAPI.getRecordingsBySchedule(
+        schedule.scheduleId,
+        schedule.platformId,
+        occurrence._id
+      );
+
+      setRecordings(data || []);
+      console.log("rec data=>", data);
+    } catch (err) {
+      setError("Failed to fetch recordings. Please try again.");
+      console.error("Error fetching recordings", err);
     } finally {
       setLoading(false);
     }
@@ -67,6 +91,7 @@ const OccurrenceDetail = () => {
   useEffect(() => {
     if (schedule && occurrence) {
       fetchParticipants();
+      fetchRecordings();
     } else {
       // If no schedule or occurrence in state, redirect back
       navigate(`/schedules/${platformId}/${scheduleId}`);
@@ -89,11 +114,11 @@ const OccurrenceDetail = () => {
 
   const getRoleColor = (role) => {
     const colors = {
-      host: 'bg-purple-100 text-purple-800',
-      participant: 'bg-blue-100 text-blue-800',
-      moderator: 'bg-green-100 text-green-800',
+      host: "bg-purple-100 text-purple-800",
+      participant: "bg-blue-100 text-blue-800",
+      moderator: "bg-green-100 text-green-800",
     };
-    return colors[role] || 'bg-gray-100 text-gray-800';
+    return colors[role] || "bg-gray-100 text-gray-800";
   };
 
   const SessionTimeline = ({ participant }) => {
@@ -102,39 +127,52 @@ const OccurrenceDetail = () => {
     }
 
     const totalDuration = formatDuration(participant.totalDuration);
-    
+
     return (
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h4 className="font-medium text-gray-900">Session Timeline</h4>
           <span className="text-sm text-gray-600">Total: {totalDuration}</span>
         </div>
-        
+
         <div className="space-y-2">
           {participant.sessions.map((session, index) => (
             <div key={index} className="bg-gray-50 rounded-lg p-3">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-900">Session {index + 1}</span>
-                <span className="text-sm text-gray-600">{formatDuration(session.duration)}</span>
+                <span className="text-sm font-medium text-gray-900">
+                  Session {index + 1}
+                </span>
+                <span className="text-sm text-gray-600">
+                  {formatDuration(session.duration)}
+                </span>
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                 <div>
                   <span className="text-gray-500">Joined:</span>
-                  <span className="ml-2 text-gray-900">{formatDateTime(session.joinTime)}</span>
+                  <span className="ml-2 text-gray-900">
+                    {formatDateTime(session.joinTime)}
+                  </span>
                 </div>
                 <div>
                   <span className="text-gray-500">Left:</span>
-                  <span className="ml-2 text-gray-900">{formatDateTime(session.leaveTime)}</span>
+                  <span className="ml-2 text-gray-900">
+                    {formatDateTime(session.leaveTime)}
+                  </span>
                 </div>
               </div>
-              
+
               {/* Simple timeline bar */}
               <div className="mt-2">
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-primary-500 h-2 rounded-full" 
-                    style={{ width: `${Math.min(100, (session.duration / participant.totalDuration) * 100)}%` }}
+                  <div
+                    className="bg-primary-500 h-2 rounded-full"
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        (session.duration / participant.totalDuration) * 100
+                      )}%`,
+                    }}
                   ></div>
                 </div>
               </div>
@@ -168,7 +206,7 @@ const OccurrenceDetail = () => {
         </button>
         <div className="h-6 w-px bg-gray-300" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Meeting Participants</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Meeting Details</h1>
           <p className="text-gray-600">{occurrence.title}</p>
         </div>
       </div>
@@ -177,24 +215,30 @@ const OccurrenceDetail = () => {
       <div className="bg-white rounded-lg shadow border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">Meeting Information</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Meeting Information
+            </h2>
             <StatusBadge status={occurrence.status} />
           </div>
         </div>
         <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex items-start space-x-2">
               <Calendar className="w-4 h-4 text-gray-400 mt-0.5" />
               <div>
                 <p className="text-sm font-medium text-gray-900">Start Time</p>
-                <p className="text-sm text-gray-600">{formatDateTime(occurrence.startDateTime)}</p>
+                <p className="text-sm text-gray-600">
+                  {formatDateTime(occurrence.startDateTime)}
+                </p>
               </div>
             </div>
             <div className="flex items-start space-x-2">
               <Clock className="w-4 h-4 text-gray-400 mt-0.5" />
               <div>
                 <p className="text-sm font-medium text-gray-900">End Time</p>
-                <p className="text-sm text-gray-600">{formatDateTime(occurrence.endDateTime)}</p>
+                <p className="text-sm text-gray-600">
+                  {formatDateTime(occurrence.endDateTime)}
+                </p>
               </div>
             </div>
             <div className="flex items-start space-x-2">
@@ -202,6 +246,33 @@ const OccurrenceDetail = () => {
               <div>
                 <p className="text-sm font-medium text-gray-900">Host</p>
                 <p className="text-sm text-gray-600">{occurrence.hostName}</p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-2">
+              <Camera className="w-4 h-4 text-gray-400 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-gray-900">Recording</p>
+
+                {!recordings ||
+                !recordings.data ||
+                recordings.data.length === 0 ? (
+                  <p className="text-sm text-gray-600">No recording yet</p>
+                ) : (
+                  <ul className="space-y-1">
+                    {recordings.data.map((rec) => (
+                      <li key={rec._id}>
+                        <a
+                          href={rec.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-600 hover:underline"
+                        >
+                          {rec.meta?.webViewLink ? "View Recording" : rec.url}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           </div>
@@ -244,23 +315,33 @@ const OccurrenceDetail = () => {
                             <User className="w-5 h-5 text-gray-600" />
                           </div>
                           <div>
-                            <h3 className="font-medium text-gray-900">{participant.participantName}</h3>
+                            <h3 className="font-medium text-gray-900">
+                              {participant.participantName}
+                            </h3>
                             <div className="flex items-center space-x-2 mt-1">
-                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getRoleColor(participant.role)}`}>
+                              <span
+                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getRoleColor(
+                                  participant.role
+                                )}`}
+                              >
                                 {participant.role}
                               </span>
                               <span className="text-sm text-gray-600">
-                                Total: {formatDuration(participant.totalDuration)}
+                                Total:{" "}
+                                {formatDuration(participant.totalDuration)}
                               </span>
                             </div>
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
                           <span className="text-sm text-gray-500">
-                            {participant.sessions?.length || 0} session{participant.sessions?.length !== 1 ? 's' : ''}
+                            {participant.sessions?.length || 0} session
+                            {participant.sessions?.length !== 1 ? "s" : ""}
                           </span>
                           <button
-                            onClick={() => toggleParticipantExpanded(participant._id)}
+                            onClick={() =>
+                              toggleParticipantExpanded(participant._id)
+                            }
                             className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
                           >
                             {isExpanded ? (

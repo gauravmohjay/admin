@@ -274,7 +274,7 @@ const ScheduleDetail = () => {
                           className="text-primary-600 hover:text-primary-800 flex items-center space-x-1"
                         >
                           <Eye className="w-4 h-4" />
-                          <span>View Participants</span>
+                          <span>View Detail</span>
                         </button>
                       </td>
                     </tr>
