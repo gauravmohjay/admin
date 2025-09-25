@@ -32,6 +32,21 @@ export const formatDateTime = (isoString, showTime = true, timezone = 'Asia/Kolk
   return new Intl.DateTimeFormat('en-US', options).format(date);
 };
 
+export const  to12HourFormat=(time24) =>{
+  const [hoursStr, minutes] = time24.split(":");
+  let hours = parseInt(hoursStr, 10);
+
+  if (isNaN(hours) || isNaN(Number(minutes))) {
+    throw new Error("Invalid time format. Use HH:mm");
+  }
+
+  const period = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12; 
+
+  return `${hours}:${minutes} ${period}`;
+}
+
+
 // Format recurrence display
 export const formatRecurrence = (recurrence, daysOfWeek = []) => {
   if (recurrence === 'daily') return 'Daily';

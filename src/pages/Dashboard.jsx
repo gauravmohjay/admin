@@ -7,6 +7,7 @@ import {
   VideoIcon,
   BarChart3,
   Zap,
+  FileVideoCamera,
 } from "lucide-react";
 import {
   LineChart,
@@ -29,7 +30,7 @@ import { getPlatforms } from "../services/api";
 import { scheduleAPI } from "../services/api";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import mohjayLogo from "/mohjay.png"
+import mohjayLogo from "/mohjay.png";
 
 // Demo data for charts
 const occurrenceData = [
@@ -105,8 +106,8 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header Section */}
       <div className="bg-white border-b border-gray-200">
-        <div className="px-6 py-8">
-          <div className="max-w-7xl mx-auto">
+        <div className="px-6 py-4">
+          <div className="max-w-7xl mx-auto md:px-6">
             <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
             {/* <p className="text-gray-600 mt-2">
               overview of your platform schedules and analytics
@@ -120,7 +121,7 @@ const Dashboard = () => {
         {/* Platform Cards */}
         <div>
           <div className="flex items-center gap-2 mb-6">
-            <BarChart3 className="w-5 h-5 text-indigo-600" />
+            <BarChart3 className="w-5 h-5 text-[#9E0000]" />
             <h2 className="text-xl font-semibold text-gray-900">Platforms</h2>
           </div>
 
@@ -140,15 +141,15 @@ const Dashboard = () => {
             ) : (
               platforms?.map((platform) => (
                 <Link key={platform.name} to={"/schedules/" + platform.name}>
-                  <div className="group bg-white rounded-xl border border-gray-200 p-6 hover:border-indigo-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
+                  <div className="group bg-white rounded-xl border border-gray-200 p-6 hover:border-red-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
                     <div className="flex items-center justify-center w-16 h-16 bg-black/90 rounded-lg mb-4 group-hover:bg-black/80 transition-colors">
                       {platform.name == "mohjay" ? (
                         <img src={mohjayLogo}></img>
                       ) : (
-                        <Activity className="w-6 h-6 text-indigo-600" />
+                        <Activity className="w-6 h-6 text-white" />
                       )}
                     </div>
-                    <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                    <h3 className="font-semibold text-gray-900 group-hover:text-red-700 transition-colors">
                       {platform.name}
                     </h3>
                   </div>
@@ -161,7 +162,7 @@ const Dashboard = () => {
         {/* Statistics Cards */}
         <div>
           <div className="flex items-center gap-2 mb-6">
-            <TrendingUp className="w-5 h-5 text-indigo-600" />
+            <TrendingUp className="w-5 h-5 text-[#9E0000]" />
             <h2 className="text-xl font-semibold text-gray-900">Statistics</h2>
           </div>
 
@@ -170,29 +171,49 @@ const Dashboard = () => {
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <Calendar className="w-5 h-5 text-blue-900" />
+                  <div className="p-2 bg-red-50 rounded-lg">
+                    <Calendar className="w-5 h-5 text-[#9E0000]" />
                   </div>
-                  <h3 className="font-semibold text-gray-900">
-                    Total Schedules
-                  </h3>
+                  <h3 className="font-semibold text-gray-900">Schedules</h3>
                 </div>
               </div>
-              <div className="space-y-2">
-                <p className="text-3xl font-bold text-blue-900">
-                  {scheduleStat?.totalSchedules || 0}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Active scheduling sessions
-                </p>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between py-2 border-b border-gray-100 last:border-none">
+                  <p className="text-gray-700 font-medium">Total</p>
+
+                  <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold">
+                    {scheduleStat?.totalSchedules || 0}
+                  </span>
+                </div>
+
+                {scheduleStat?.byStatus?.length > 0 ? (
+                  scheduleStat.byStatus.map((item) => (
+                    <div
+                      key={item.status}
+                      className="flex items-center justify-between py-2 border-b border-gray-100 last:border-none"
+                    >
+                      <span className="text-gray-700 font-medium">
+                        {item.status}
+                      </span>
+                      <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold">
+                        {item.count}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-400 text-sm">
+                    No platform data available
+                  </p>
+                )}
               </div>
             </div>
 
             {/* By Platform */}
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <Activity className="w-5 h-5 text-green-600" />
+                <div className="p-2 bg-red-50 rounded-lg">
+                  <Activity className="w-5 h-5 text-[#9E0000]" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Platform</h3>
               </div>
@@ -222,8 +243,8 @@ const Dashboard = () => {
             {/* By Recurrence */}
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Clock className="w-5 h-5 text-purple-600" />
+                <div className="p-2 bg-red-50 rounded-lg">
+                  <Clock className="w-5 h-5 text-[#9E0000]" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Recurrence</h3>
               </div>
@@ -259,19 +280,42 @@ const Dashboard = () => {
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-orange-100 rounded-lg">
-                    <Clock className="w-5 h-5 text-orange-600" />
+                  <div className="p-2 bg-red-50 rounded-lg">
+                   <FileVideoCamera className="w-5 h-5 text-red-700" />
                   </div>
                   <h3 className="font-semibold text-gray-900">Meetings</h3>
                 </div>
               </div>
-              <div className="space-y-2">
-                <p className="text-3xl font-bold text-orange-600">
-                  {occurrenceStats?.totalOccurrences || 0}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Total meetings across schedules
-                </p>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between py-2 border-b border-gray-100 last:border-none">
+                  <p className="text-gray-700 font-medium">Total</p>
+
+                  <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold">
+                    {occurrenceStats?.totalOccurrences || 0}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-gray-100 last:border-none">
+                  <p className="text-gray-700 font-medium">Live</p>
+
+                  <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold">
+                    {occurrenceStats?.live || 0}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-gray-100 last:border-none">
+                  <p className="text-gray-700 font-medium">Ended</p>
+
+                  <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold">
+                    {occurrenceStats?.ended || 0}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-gray-100 last:border-none">
+                  <p className="text-gray-700 font-medium">Cancelled</p>
+
+                  <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold">
+                    {occurrenceStats?.cancelled || 0}
+                  </span>
+                </div>
               </div>
             </div>
           </div>

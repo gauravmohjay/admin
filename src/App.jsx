@@ -28,11 +28,11 @@ function App() {
 
   return (
     <Router>
-      <div className="flex  min-h-screen bg-gray-50">
-        <div className="flex-1">
+      <div className="  min-h-screen bg-gray-50">
+        <div className="">
           {isLoggedIn && <Topbar />} {/* consistent Topbar */}
 
-          <main className="flex-1  w-11/12 mx-auto">
+          <main className=" ">
             <Routes>
               {/* Public route */}
               <Route path="/" element={<Login />} />
