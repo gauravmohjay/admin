@@ -97,6 +97,18 @@ const ScheduleDetail = () => {
     );
   };
 
+  const handleJoinRoom = (occurrence) => {
+    navigate("/room", {
+      state: {
+        scheduleId:occurrence.scheduleId,
+        occurrenceId: occurrence._id,
+        userId: "p1",
+        username: "Aman",
+        role: "host",
+      },
+    });
+  };
+
   const formatHosts = () => {
     let primaryHost = null;
     let coHosts = [];
@@ -139,8 +151,8 @@ const ScheduleDetail = () => {
   const { primaryHost, coHosts } = formatHosts();
   const startRange = (pagination.currentPage - 1) * pagination.pageSize + 1;
   const endRange = Math.min(
-      pagination.currentPage * pagination.pageSize,
-      pagination.totalCount
+    pagination.currentPage * pagination.pageSize,
+    pagination.totalCount
   );
 
   return (
@@ -210,8 +222,8 @@ const ScheduleDetail = () => {
                 icon={Calendar}
                 label="Date Range"
                 value={`${formatDateTime(
-                    schedule.startDate,
-                    false
+                  schedule.startDate,
+                  false
                 )} to ${formatDateTime(schedule.endDate, false)}`}
               />
               <DetailItem
@@ -223,8 +235,8 @@ const ScheduleDetail = () => {
                 icon={Repeat2}
                 label="Recurrence"
                 value={formatRecurrence(
-                    schedule.recurrence,
-                    schedule.daysOfWeek
+                  schedule.recurrence,
+                  schedule.daysOfWeek
                 )}
               />
             </div>
@@ -237,30 +249,30 @@ const ScheduleDetail = () => {
               <div className="space-y-4 pt-1">
                 {/* Primary Host */}
                 {primaryHost && (
-                    <HostCard
-                        host={primaryHost}
-                        role="Host"
-                        colorClass="bg-red-700"
-                        bgColorClass="bg-red-100"
-                    />
+                  <HostCard
+                    host={primaryHost}
+                    role="Host"
+                    colorClass="bg-red-700"
+                    bgColorClass="bg-red-100"
+                  />
                 )}
 
                 {/* Co-Hosts */}
                 {coHosts.length > 0 && (
-                    <div className="space-y-2 mt-4 pt-3 border-t border-gray-100">
-                      <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Co-Host{coHosts.length > 1 ? "s" : ""}
-                      </p>
-                      {coHosts.map((host, index) => (
-                          <HostCard
-                              key={index}
-                              host={host}
-                              role="Co-Host"
-                              colorClass="bg-gray-600"
-                              bgColorClass="bg-gray-50"
-                          />
-                      ))}
-                    </div>
+                  <div className="space-y-2 mt-4 pt-3 border-t border-gray-100">
+                    <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Co-Host{coHosts.length > 1 ? "s" : ""}
+                    </p>
+                    {coHosts.map((host, index) => (
+                      <HostCard
+                        key={index}
+                        host={host}
+                        role="Co-Host"
+                        colorClass="bg-gray-600"
+                        bgColorClass="bg-gray-50"
+                      />
+                    ))}
+                  </div>
                 )}
               </div>
             </div>
@@ -297,73 +309,83 @@ const ScheduleDetail = () => {
           </div>
         ) : occurrences.length > 0 ? (
           <>
-          <div className="overflow-hidden">
-
-      
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-100">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Meeting
-                    </th>
-                    <th className="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Date & Time
-                    </th>
-                    <th className="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-4 sm:px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider w-28">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-100">
-                  {occurrences.map((occurrence) => (
-                    <tr
-                      key={occurrence._id}
-                      className="transition-colors hover:bg-red-50/50"
-                    >
-                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                        <p className="text-sm sm:text-base font-medium text-gray-900">
-                          {occurrence.title}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          Group:{" "}
-                          <span className="font-medium text-gray-700">
-                            {occurrence.group}
-                          </span>
-                          <span className="ml-2 text-gray-400">|</span>
-                          Host: {occurrence.hostName}
-                        </p>
-                      </td>
-                      <td className="px-4 sm:px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
-                        <p className="font-medium">
-                          {formatDateTime(occurrence.startDateTime)}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          to {formatDateTime(occurrence.endDateTime)}
-                        </p>
-                      </td>
-                      <td className="px-4 sm:px-6 py-4">
-                        <StatusBadge status={occurrence.status} />
-                      </td>
-                      <td className="px-4 sm:px-6 py-4 text-right">
-                        <button
-                          onClick={() => handleOccurrenceClick(occurrence)}
-                          className="text-red-700 cursor-pointer hover:text-red-900 flex items-center justify-end space-x-1 p-2 rounded-lg hover:bg-red-100 transition-colors"
-                          title="View Meeting Details"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                          <span>View</span>
-                        </button>
-                      </td>
+            <div className="overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-100">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Meeting
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Date & Time
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider w-28">
+                        Actions
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-100">
+                    {occurrences.map((occurrence) => (
+                      <tr
+                        key={occurrence._id}
+                        className="transition-colors hover:bg-red-50/50"
+                      >
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                          <p className="text-sm sm:text-base font-medium text-gray-900">
+                            {occurrence.title}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-0.5">
+                            Group:{" "}
+                            <span className="font-medium text-gray-700">
+                              {occurrence.group}
+                            </span>
+                            <span className="ml-2 text-gray-400">|</span>
+                            Host: {occurrence.hostName}
+                          </p>
+                        </td>
+                        <td className="px-4 sm:px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                          <p className="font-medium">
+                            {formatDateTime(occurrence.startDateTime)}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            to {formatDateTime(occurrence.endDateTime)}
+                          </p>
+                        </td>
+                        <td className="px-4 sm:px-6 py-4">
+                          <StatusBadge status={occurrence.status} />
+                        </td>
+                        <td className="px-4 sm:px-6 py-4 text-right">
+                          <button
+                            onClick={() => handleOccurrenceClick(occurrence)}
+                            className="text-red-700 cursor-pointer hover:text-red-900 flex items-center justify-end space-x-1 p-2 rounded-lg hover:bg-red-100 transition-colors"
+                            title="View Meeting Details"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            <span>View</span>
+                          </button>
+                          {occurrence.status === "live" ? (
+                            <button
+                              onClick={() => handleJoinRoom(occurrence)}
+                              className="text-red-700 cursor-pointer hover:text-red-900 flex items-center justify-end space-x-1 p-2 rounded-lg hover:bg-red-100 transition-colors"
+                              title="View Meeting Details"
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                              <span>Join</span>
+                            </button>
+                          ) : (
+                            <div></div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-                </div>
 
             {/* Pagination Footer with Page Size Selector */}
             <div className="p-4 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0">

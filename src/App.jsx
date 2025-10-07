@@ -9,6 +9,7 @@ import SchedulesTabs from "./components/Layout/SchedulesTabs";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/Layout/ProtectedRoute";
 import { useEffect, useState } from "react";
+import Room from "./pages/Room";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
@@ -31,7 +32,6 @@ function App() {
       <div className="  min-h-screen bg-gray-50">
         <div className="">
           {isLoggedIn && <Topbar />} {/* consistent Topbar */}
-
           <main className=" ">
             <Routes>
               {/* Public route */}
@@ -51,7 +51,7 @@ function App() {
                 path="/schedules/:platformId"
                 element={
                   <ProtectedRoute>
-                   <Schedules />
+                    <Schedules />
                   </ProtectedRoute>
                 }
               >
@@ -73,6 +73,15 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <OccurrenceDetail />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/room"
+                element={
+                  <ProtectedRoute>
+                    <Room />
                   </ProtectedRoute>
                 }
               />
