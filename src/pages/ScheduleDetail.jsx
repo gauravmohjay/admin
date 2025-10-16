@@ -102,9 +102,9 @@ const ScheduleDetail = () => {
       state: {
         scheduleId:occurrence.scheduleId,
         occurrenceId: occurrence._id,
-        userId: "p1",
-        username: "Aman",
-        role: "host",
+        userId: "admin101",
+        username: "Admin",
+        role: "admin",
       },
     });
   };
